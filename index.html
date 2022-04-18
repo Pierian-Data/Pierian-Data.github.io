@@ -1,85 +1,64 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-	<title>A-Frame: Keyboard component</title>
-	<meta name="description" content="A-Frame Examples">
-	<script src="js/aframe-master-v1.3.0.min.js"></script>
-	<script src="js/aframe-environment-component.min.js"></script>
-	<script src="js/aframe-super-keyboard.min.js"></script>
-</head>
-
-<body>
-
-<script>
-
-AFRAME.registerComponent('keyboard-functions', {
-	
-	init: function()
-	{
-		// for referencing issues
-		let self = this;
-
-		// set up event listeners
-
-		// input event triggered when user presses enter
-		this.el.addEventListener('superkeyboardinput', function(event)
-		{
-			let text = event.detail.value;
-			
-			// text also accessible via: self.el.getAttribute("super-keyboard")["value"]
-			
-			console.log("Input: " + text);
-			
-			// clear the input bar (since keyboard is not disappearing)
-			self.el.setAttribute( "super-keyboard", "value", "" );
-
-			// change the color of the sphere
-			document.getElementById("sphere").setAttribute("color", text);
-		});
-
-		// dismiss event triggered when user closes keyboard
-		this.el.addEventListener('superkeyboarddismiss', function(event)
-		{
-			// repurpose close functionality to clear all input text without submitting
-			console.log("Input cleared.");
-			self.el.setAttribute( "super-keyboard", "value", "" );
-		});
-	},
-	
-	tick: function (time, timeDelta) 
-	{
-		// force keyboard to remain visible even after input or dismiss events triggered
-		if ( !this.el.object3D.visible )
-			this.el.object3D.visible = true;
-	}
-	
-});
-
-</script>
-
-<!-- https://github.com/supermedium/aframe-environment-component -->
-<a-scene environment="preset: default;">
-
-	<a-entity id="mouseCursor" cursor="rayOrigin: mouse"></a-entity>
-
-    <a-entity id="hand" laser-controls="hand: right">
-    	<a-sphere radius="0.03"></a-sphere>
-    </a-entity>
-
-    <!-- 
-    	Documentation at https://github.com/supermedium/aframe-super-keyboard
-    	Changeto "hand: #hand;" for VR. 
-		imagePath: directory that contains image sk-basic.png
-		multipleInputs: show keyboard stay open after input is entered? (default: false)
-    -->
-
-    <a-entity id="keyboard" super-keyboard="hand: #mouseCursor; imagePath: images/;" keyboard-functions
-    position="0 1.25 -0.5" rotation="-30 0 0"></a-entity>
-
-    <a-sphere id="sphere" radius="2" position="0 2 -8" color="gray"></a-sphere>
-
-</a-scene>
-
-</body>
+  <head>
+    <meta charset="utf-8">
+    <title>Hand Tracking! • A-Frame</title>
+    <meta name="description" content="Hand Tracking! • A-Frame">
+    <script src="js/aframe-master-v1.3.0.min.js"></script>
+    <script src="js/info-message.js"></script>
+    <script src="js/aframe-environment-component.min.js"></script>
+    <script src="js/pinchable.js"></script>
+    <script src="js/color-change.js"></script>
+    <script src="js/slider.js"></script>
+    <script src="js/size-change.js"></script>
+    <script src="js/button.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="js/pressable.js"></script>
+    <script src="js/event-manager.js"></script>
+  </head>
+  <body>
+    <a-scene environment info-message="htmlSrc: #messageText">
+      <a-assets>
+        <a-asset-item id="messageText" src="message.html"></a-asset-item>
+      </a-assets>
+      <a-entity
+        id="boxGeometry"
+        position="0 2.0 -1"
+        rotation="45 45 0"
+        geometry="primitive: box; height: 0.6; width: 0.6; depth: 0.6"
+        material="color: #ff4b5c"
+        size-change
+        scale="0.5 0.5 0.5"
+      ></a-entity>
+       <a-entity
+        id="torusGeometry"
+        position="0 2.0 -1"
+        rotation="45 45 0"
+        geometry="primitive: torus; radius: 0.4; radius-tubular: 0.06"
+        material="color: #d2e603"
+        size-change
+        visible="false"
+        scale="0.5 0.5 0.5"
+      ></a-entity>
+       <a-entity
+        id="sphereGeometry"
+        position="0 2.0 -1"
+        rotation="45 45 0"
+        geometry="primitive: sphere; radius: 0.6;"
+        material="color: #fcdab7"
+        size-change
+        visible="false"
+        scale="0.5 0.5 0.5"
+      ></a-entity>
+      <a-entity id="menu" menu position="0 1.5 -0.5" rotation="-45 0 0" event-manager>
+        <a-entity slider position="0 0.10 0"></a-entity>
+        <a-entity id="sphereButton" button="label: sphere" position="-0.15 0 0"></a-entity>
+        <a-entity id="boxButton" button="label: box" position="0 0 0"></a-entity>
+        <a-entity id="torusButton"button="label: torus" position="0.15 0 0"></a-entity>
+        <a-entity id="darkModeButton" button="label: Dark Mode; width: 0.20; toggable: true" position="0 -0.10 0"></a-entity>
+      </a-entity>
+      <a-entity hand-tracking-controls="hand: left"></a-entity>
+      <a-entity hand-tracking-controls="hand: right"></a-entity>
+    </a-scene>
+  </body>
 </html>
